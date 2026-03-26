@@ -131,8 +131,8 @@ if st.button("🚀 Analyse PMS Suitability", type="primary"):
         MF probability: {mf_prob:.0f}%
         PMS probability: {pms_prob:.0f}%
         PMS Suitability Score: {pms_suitability}/100
-        Give a warm, short (3-4 sentences) response.
-        Focus only on general behaviour and mindset. Never mention any specific Scripbox features or buttons.
+        Give a warm, yet detailed response in 3 paragraphs.
+        Focus primarily on general behaviour and mindset. Focus on any corrective actions they can take and what should they talk to an advisor about. Never mention any specific Scripbox features or buttons.
         """
         ai_response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt).text
         
