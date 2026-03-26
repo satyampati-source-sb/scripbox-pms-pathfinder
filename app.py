@@ -134,7 +134,7 @@ if st.button("🚀 Analyse PMS Suitability", type="primary"):
         Give a warm, yet detailed response in 3 paragraphs.
         Focus primarily on general behaviour and mindset. Focus on any corrective actions they can take and what should they talk to an advisor about. Never mention any specific Scripbox features or buttons.
         """
-        ai_response = client.models.generate_content(model="gemini-2.5-pro", contents=prompt).text
+        ai_response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt).text
         
         # Results
         st.success("✅ Your PMS Pathfinder Report")
