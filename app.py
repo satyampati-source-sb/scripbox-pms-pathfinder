@@ -123,18 +123,28 @@ if st.button("🚀 Analyse PMS Suitability", type="primary"):
         pms_suitability = max(0, min(100, pms_suitability))
         
         # AI Coach (strict prompt)
-        prompt = f"""
-        You are a friendly behavioural finance coach for high-net-worth clients.
-        Goal: {goal_desc}
-        Current corpus: ₹{current_corpus:,.0f}
-        Discipline score: {discipline_score}/100
-        MF probability: {mf_prob:.0f}%
-        PMS probability: {pms_prob:.0f}%
-        PMS Suitability Score: {pms_suitability}/100
-        Give a warm, yet detailed response in 3 paragraphs.
-        Focus primarily on general behaviour and mindset. Focus on any corrective actions they can take and what should they talk to an advisor about. Never mention any specific Scripbox features or buttons.
-        """
-        ai_response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt).text
+                # === AI CALL WITH ERROR HANDLING (Original GoalGuard) ===
+        try:
+            prompt = f"""
+            You are a friendly Scripbox behavioural coach.
+            User goal: {goal_desc}
+            Discipline score: {discipline_score}/100
+            Base goal probability: {base_prob:.0f}%
+            Behaviour-adjusted probability: {behaviour_prob:.0f}%
+            Crisis harm chance: {crisis_harm}%
+            Give a warm, encouraging explanation of their biases and with actionable suggestions.
+            Focus  on general behaviour, emotions and mindset as well corrective actions they can take. Never mention specific app features.
+            Use simple, friendly language and structure the feedback in an effective easy to read manner. Avoid big chunky paragraphs. Use bullet points where relevant.
+            """
+            ai_response = client.models.generate_content(model="gemini-2.5-flash-lite", contents=prompt).text
+        except ClientError as e:
+            if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e) or "quota" in str(e).lower():
+                ai_response = "⚠️ Gemini API quota limit reached for today (free tier). Please try again tomorrow or create a new API key from a new Google Cloud project."
+            else:
+                ai_response = f"⚠️ AI coach temporarily unavailable: {str(e)[:100]}..."
+        except Exception as e:
+            ai_response = "⚠️ The AI coach is temporarily unavailable. However, your probabilities and chart are still shown above."
+        # =====================================
         
         # Results
         st.success("✅ Your PMS Pathfinder Report")
